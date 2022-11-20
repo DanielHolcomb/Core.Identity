@@ -1,6 +1,6 @@
 ﻿namespace Core.Identity.Models
 {
-    public class JwtConfig
+    public class JwtConfigOptions
     {
         public const string Name = "Jwt";
 

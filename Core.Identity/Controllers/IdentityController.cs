@@ -1,5 +1,6 @@
 using Core.Identity.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,18 +13,23 @@ namespace Core.Identity.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly ILogger<IdentityController> _logger;
-        private readonly JwtConfig _jwtConfig;
+        private readonly JwtConfigOptions _jwtConfig;
+        private readonly StoredUserOptions _storedUser;
 
-        public IdentityController(ILogger<IdentityController> logger, JwtConfig jwtConfig)
+        public IdentityController(ILogger<IdentityController> logger, IOptions<JwtConfigOptions> jwtConfig, IOptions<StoredUserOptions> storedUser)
         {
             _logger = logger;
-            _jwtConfig = jwtConfig;
+            _jwtConfig = jwtConfig.Value;
+            _storedUser = storedUser.Value;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("Token")]
-        public IActionResult Token()
+        public IActionResult Token([FromBody] User user)
         {
+            if (user.Username != _storedUser.Username && user.Password != _storedUser.Password)
+                return Forbid();
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Key);
             var tokenDescriptor = new SecurityTokenDescriptor

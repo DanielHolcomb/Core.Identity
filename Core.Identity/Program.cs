@@ -32,8 +32,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-var jwtConfig = new JwtConfig();
-builder.Configuration.Bind(JwtConfig.Name, jwtConfig);
+builder.Services.Configure<JwtConfigOptions>(builder.Configuration.GetSection(JwtConfigOptions.Name));
+builder.Services.Configure<StoredUserOptions>(builder.Configuration.GetSection(StoredUserOptions.Name));
+
+
+var storedUser = new StoredUserOptions();
+builder.Configuration.Bind(StoredUserOptions.Name, storedUser);
 
 builder.Services.AddAuthorization();
 var app = builder.Build();
