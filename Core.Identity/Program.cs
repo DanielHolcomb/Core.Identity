@@ -1,3 +1,4 @@
+using Core.Identity.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -30,6 +31,9 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
+
+var jwtConfig = new JwtConfig();
+builder.Configuration.Bind(JwtConfig.Name, jwtConfig);
 
 builder.Services.AddAuthorization();
 var app = builder.Build();
