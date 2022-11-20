@@ -21,7 +21,7 @@ namespace Core.Identity.Controllers
 
         [HttpGet]
         [Route("Token")]
-        public Task<IActionResult> Token()
+        public IActionResult Token()
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config.GetSection("Jwt:Key").Value);
